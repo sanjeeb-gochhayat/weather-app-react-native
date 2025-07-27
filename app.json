@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "WeatherForecast",
-    "slug": "WeatherForecast",
+    "name": "Weather-Forecast",
+    "slug": "Weather-Forecast",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
