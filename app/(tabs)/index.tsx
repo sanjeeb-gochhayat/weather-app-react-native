@@ -1,3 +1,4 @@
+import HomeScreenForecast from "@/components/HomeScreenForecast";
 import SearchScreen from "@/components/SearchScreen";
 import WeatherCard from "@/components/WeatherCard";
 import * as ImagePicker from "expo-image-picker";
@@ -42,12 +43,13 @@ const Index = () => {
       <WeatherCard />
       <View style={styles.buttonContainer}>
         <Pressable style={styles.myBtn}>
-          <Text style={{ color: "#cfcfcfff" }}>View Details</Text>
+          <Text style={{ color: "#cfcfcfff", fontWeight:'bold' }}>View Details</Text>
         </Pressable>
         <Pressable  style={styles.myBtn}>
-          <Text style={{ color: "#cfcfcfff" }}>Mark Favourite</Text>
+          <Text style={{ color: "#cfcfcfff", fontWeight:'bold' }}>Mark Favourite</Text>
         </Pressable>
       </View>
+      <HomeScreenForecast />
     </SafeAreaView>
   );
 };
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
     marginLeft: 10,
-    color: "gray",
+    color: "#455c9bff",
   },
   button: {
     fontSize: 20,
@@ -86,7 +88,7 @@ const styles = StyleSheet.create({
   },
   myBtn: {
     width: 100,
-    height: 30,
+    height: 35,
     backgroundColor: "#455c9bff",
     display: "flex",
     justifyContent: "center",
