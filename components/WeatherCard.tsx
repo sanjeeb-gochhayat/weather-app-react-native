@@ -1,7 +1,9 @@
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
+
+const screenHeight = Dimensions.get('window').height;
 
 const WeatherCard = () => {
   let imageSource = "https://openweathermap.org/img/wn/10d@2x.png";
@@ -51,17 +53,18 @@ export default WeatherCard;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 2 / 3,
+    height: screenHeight * 0.5,
     padding: 5,
     marginTop: 20,
     marginLeft: 40,
     marginRight: 40,
     alignItems: "center",
     backgroundImage: "linear-gradient(-20deg, #f794a4 0%, #fdd6bd 100%)",
+    borderRadius:10
   },
   image: {
     width: 150,
-    height: 150,
+    height: 160,
     borderRadius: 18,
   },
   description: {
@@ -80,6 +83,7 @@ const styles = StyleSheet.create({
   extraInfo: {
     display: "flex",
     flexDirection: "row",
+    marginTop: 15
   },
   extraItem: {
     height: 80,
