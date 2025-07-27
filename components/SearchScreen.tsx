@@ -9,7 +9,7 @@ const SearchScreen = () => {
     <View style={styles.container}>
       <TextInput style={styles.input} />
       <View style={styles.iconContainer}>
-      <Ionicons name="search-outline" size={30}/>
+      <Ionicons name="search-outline" color={'gray'} size={30}/>
       </View>
     </View>
   )
