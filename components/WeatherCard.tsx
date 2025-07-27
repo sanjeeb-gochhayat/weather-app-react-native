@@ -1,10 +1,25 @@
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 const WeatherCard = () => {
   let imageSource = "https://openweathermap.org/img/wn/10d@2x.png";
+
+  let extraDetails = [
+    {
+      value: "25%",
+      label: "Cloudiness",
+    },
+    {
+      value: "15%",
+      label: "Humidity",
+    },
+    {
+      value: "20m/s",
+      label: "Wind speed",
+    },
+  ];
   return (
     <LinearGradient
       colors={["#455c9bff", "#5b5980ff"]}
@@ -16,6 +31,18 @@ const WeatherCard = () => {
       <Text style={styles.description}>Heavy Rainfall</Text>
       <Text style={styles.date}>Sunday 27 July 2025</Text>
       <Text style={styles.temp}>28°</Text>
+      <View style={styles.extraInfo}>
+        {extraDetails?.map((item) => {
+          return (
+            <View key={item.value} style={styles.extraItem}>
+              <Text style={{ fontSize: 20, fontWeight: "bold", color:'#cfcfcfff' }}>
+                {item.value}
+              </Text>
+              <Text style={{ color:'#b4b4b4ff' }}>{item.label}</Text>
+            </View>
+          );
+        })}
+      </View>
     </LinearGradient>
   );
 };
@@ -24,9 +51,6 @@ export default WeatherCard;
 
 const styles = StyleSheet.create({
   container: {
-    borderColor: "gray",
-    borderWidth: 2,
-    borderRadius: 5,
     flex: 2 / 3,
     padding: 5,
     marginTop: 20,
@@ -41,16 +65,29 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   description: {
-    fontSize:25,
-    color: "#cfcfcfff"
+    fontSize: 25,
+    color: "#cfcfcfff",
   },
-  date:{
+  date: {
     fontSize: 12,
-    fontWeight: 'bold',
-    color:'#b4b4b4ff'
+    fontWeight: "bold",
+    color: "#b4b4b4ff",
   },
   temp: {
     fontSize: 60,
-    color: "#ffd33d"
-  }
+    color: "#ffd33d",
+  },
+  extraInfo: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  extraItem: {
+    height: 80,
+    width: 80,
+    borderColor: "gray",
+    borderWidth: 1,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
