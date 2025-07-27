@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 50,
     height: 55,
-    borderColor:'#ffd33d',
+    borderColor:'#455c9bff',
     borderWidth:5,
     borderRadius: 10,
     padding:5
