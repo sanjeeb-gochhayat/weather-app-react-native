@@ -62,7 +62,6 @@ type PartialWeatherData = {
 };
 
 const Index = () => {
-  const [cityName, setCityName] = useState<string>("");
 
   const [data, setData] = useState<WeatherDataType | null>(null);
 
@@ -90,16 +89,14 @@ const Index = () => {
 
     if (geocode.length > 0) {
       let city = geocode[0].formattedAddress?.split(",")[0];
-      console.log(city)
-      setCityName(city || "Unknown");
-      getCordinate(cityName);
+      getCordinate(city);
     }
   };
 
-  const getCordinate = async (cityName: string) => {
+  const getCordinate = async (city: string | undefined) => {
     try {
       let res = await axiosInstance.get(
-        `/geo/1.0/direct?q=${cityName}&limit=1&appid=${API_KEY}`
+        `/geo/1.0/direct?q=${city}&limit=1&appid=${API_KEY}`
       );
       if (res.data) {
         setLocationInfo(res.data);
@@ -149,9 +146,7 @@ const Index = () => {
       </View>
 
       <Text style={styles.cityName}>
-        {cityName === "Unknown"
-          ? "Enter a correct city name"
-          : `${locationInfo[0]?.name}, ${locationInfo[0]?.state}`}
+        `${locationInfo[0]?.name}, ${locationInfo[0]?.state}
       </Text>
       {data && <WeatherCard data={data} />}
       <View style={styles.buttonContainer}>
