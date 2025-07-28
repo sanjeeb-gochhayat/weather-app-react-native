@@ -24,10 +24,14 @@ const SearchScreen = ({ getCordinate }: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.outerBorder}>
-  <View style={styles.innerBorder}>
-          <TextInput onChangeText={(text) => setQuery(text)} style={styles.input} placeholder="Enter city name"/>
-  </View>
-</View>
+        <View style={styles.innerBorder}>
+          <TextInput
+            onChangeText={(text) => setQuery(text)}
+            style={styles.input}
+            placeholder="Enter city name"
+          />
+        </View>
+      </View>
 
       <View style={styles.iconContainer}>
         <Pressable onPress={handleIconPress}>
@@ -52,7 +56,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 280,
   },
-    outerBorder: {
+  outerBorder: {
     borderWidth: 4,
     borderColor: "#455c9bff",
     borderRadius: 10,
@@ -65,9 +69,9 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 50,
     height: 55,
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'center',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#455c9bff",
     borderRadius: 10,
     padding: 5,

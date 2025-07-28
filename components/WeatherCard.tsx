@@ -70,6 +70,8 @@ const WeatherCard = ({ data }: Props) => {
     },
   ];
 
+  let formattedDescription = data.weather[0].description.split(" ").map((item)=> item[0].toUpperCase() + item.slice(1)).join(" ");
+
   return (
     <LinearGradient
       colors={["#455c9bff", "#5b5980ff"]}
@@ -78,7 +80,7 @@ const WeatherCard = ({ data }: Props) => {
       style={styles.container}
     >
       <Image source={imageSource} style={styles.image} />
-      <Text style={styles.description}>{data.weather[0].description}</Text>
+      <Text style={styles.description}>{formattedDescription}</Text>
       <Text style={styles.date}>{formattedDate}</Text>
       <Text style={styles.temp}>{Math.round(data.main.temp)}°</Text>
       <View style={styles.extraInfo}>
