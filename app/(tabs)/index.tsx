@@ -1,41 +1,49 @@
 import HomeScreenForecast from "@/components/HomeScreenForecast";
 import SearchScreen from "@/components/SearchScreen";
 import WeatherCard from "@/components/WeatherCard";
-import * as ImagePicker from "expo-image-picker";
-import React, { useState } from "react";
+import { API_KEY } from "@/constants";
+import axiosInstance from "@/utils/axios";
+import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-let PlaceholderImage = {
-  uri: "https://images.unsplash.com/photo-1615286628718-4a4c8924d0eb?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-};
 const Index = () => {
-  const [selectedImage, setSelectedImage] = useState<string | undefined>(
-    undefined
-  );
 
-  const pickImageAsync = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      quality: 1,
-    });
+  const cityName: string = "Bhubaneswar";
 
-    if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
-    } else {
-      alert("You did not select any image.");
+  const [data, setData] = useState({});
+
+  const getCordinate = async(cityName: string) => {
+    try {
+      let res = await axiosInstance.get(`/geo/1.0/direct?q=${cityName}&limit=1&appid=${API_KEY}`);
+      if(res.data){
+        let {lat, lon} = res.data[0];
+        getWeatherData(lat, lon)
+      }
+    } catch (error) {
+      throw error;
     }
-  };
+  }
+
+
+  const getWeatherData = async(lat:number, lon:number) => {
+    try {
+      let res = await axiosInstance.get(`/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
+      if(res.data){
+        setData(res);
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  useEffect(() => {
+    getCordinate(cityName);
+  }, [])
+  
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* <View style={styles.imageContainer}>
-        <ImageViewer imgSource={PlaceholderImage} selectedImage={selectedImage} />
-      </View>
-            <View style={styles.footerContainer}>
-        <Button theme='primary' label="Choose a photo" onPress={pickImageAsync} />
-        <Button label="Use this photo" />
-      </View> */}
       <View style={styles.search}>
         <SearchScreen />
       </View>
