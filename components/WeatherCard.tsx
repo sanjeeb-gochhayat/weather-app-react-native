@@ -3,25 +3,58 @@ import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 
-const screenHeight = Dimensions.get('window').height;
+const screenHeight = Dimensions.get("window").height;
 
-const WeatherCard = () => {
-  let imageSource = "https://openweathermap.org/img/wn/10d@2x.png";
+type WeatherDataType = {
+  coord: object;
+  weather: {
+    id: number;
+    main: string;
+    description: string;
+    icon: string;
+  }[];
+  base: string;
+  main: {
+    temp: number;
+    feels_like: number;
+    temp_min: number;
+    temp_max: number;
+    pressure: number;
+    humidity: number;
+    sea_level: number;
+    grnd_level: number;
+  };
+  visibility: number;
+  wind: {
+    speed: number;
+    deg: number;
+    gust: number;
+  };
+  clouds: {
+    all: number;
+  };
+  dt: number;
+  sys: object;
+  timezone: number;
+  id: number;
+  name: string;
+  cod: number;
+};
 
-  let extraDetails = [
-    {
-      value: "25%",
-      label: "Cloudiness",
-    },
-    {
-      value: "15%",
-      label: "Humidity",
-    },
-    {
-      value: "20m/s",
-      label: "Wind speed",
-    },
-  ];
+type Props = {
+  data: WeatherDataType;
+};
+
+const WeatherCard = ({ data }: Props) => {
+  let imageSource = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+
+  const formattedDate = new Date(data.dt * 1000).toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+
   return (
     <LinearGradient
       colors={["#455c9bff", "#5b5980ff"]}
@@ -30,20 +63,34 @@ const WeatherCard = () => {
       style={styles.container}
     >
       <Image source={imageSource} style={styles.image} />
-      <Text style={styles.description}>Heavy Rainfall</Text>
-      <Text style={styles.date}>Sunday 27 July 2025</Text>
-      <Text style={styles.temp}>28°</Text>
+      <Text style={styles.description}>{data.weather[0].description}</Text>
+      <Text style={styles.date}>{formattedDate}</Text>
+      <Text style={styles.temp}>{Math.round(data.main.temp)}°</Text>
       <View style={styles.extraInfo}>
-        {extraDetails?.map((item) => {
-          return (
-            <View key={item.value} style={styles.extraItem}>
-              <Text style={{ fontSize: 20, fontWeight: "bold", color:'#cfcfcfff' }}>
-                {item.value}
-              </Text>
-              <Text style={{ color:'#b4b4b4ff' }}>{item.label}</Text>
-            </View>
-          );
-        })}
+        <View style={styles.extraItem}>
+          <Text
+            style={{ fontSize: 20, fontWeight: "bold", color: "#cfcfcfff" }}
+          >
+            {data.clouds.all}%
+          </Text>
+          <Text style={{ color: "#b4b4b4ff" }}>Cloudiness</Text>
+        </View>
+        <View style={styles.extraItem}>
+          <Text
+            style={{ fontSize: 20, fontWeight: "bold", color: "#cfcfcfff" }}
+          >
+            {data.main.humidity}%
+          </Text>
+          <Text style={{ color: "#b4b4b4ff" }}>Humidity</Text>
+        </View>
+        <View style={styles.extraItem}>
+          <Text
+            style={{ fontSize: 20, fontWeight: "bold", color: "#cfcfcfff" }}
+          >
+            {data.wind.speed}m/s
+          </Text>
+          <Text style={{ color: "#b4b4b4ff" }}>Wind Speed</Text>
+        </View>
       </View>
     </LinearGradient>
   );
@@ -60,7 +107,7 @@ const styles = StyleSheet.create({
     marginRight: 40,
     alignItems: "center",
     backgroundImage: "linear-gradient(-20deg, #f794a4 0%, #fdd6bd 100%)",
-    borderRadius:10
+    borderRadius: 10,
   },
   image: {
     width: 150,
@@ -83,7 +130,7 @@ const styles = StyleSheet.create({
   extraInfo: {
     display: "flex",
     flexDirection: "row",
-    marginTop: 15
+    marginTop: 15,
   },
   extraItem: {
     height: 80,

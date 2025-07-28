@@ -7,54 +7,111 @@ import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const Index = () => {
+type WeatherDataType = {
+  coord: object;
+  weather: {
+    id: number;
+    main: string;
+    description: string;
+    icon: string;
+  }[];
+  base: string;
+  main: {
+    temp: number;
+    feels_like: number;
+    temp_min: number;
+    temp_max: number;
+    pressure: number;
+    humidity: number;
+    sea_level: number;
+    grnd_level: number;
+  };
+  visibility: number;
+  wind: {
+    speed: number;
+    deg: number;
+    gust: number;
+  };
+  clouds: {
+    all: number;
+  };
+  dt: number;
+  sys: object;
+  timezone: number;
+  id: number;
+  name: string;
+  cod: number;
+};
 
+
+const Index = () => {
   const [cityName, setCityName] = useState<string>("Bhubaneswar");
 
-  const [data, setData] = useState<object>({});
-  
-  const getCordinate = async(cityName: string) => {
+  const [data, setData] = useState<WeatherDataType | null>(null);
+
+  type LocationType = {
+    name: string;
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    local_names: {};
+    lat: number;
+    lon: number;
+    country: string;
+    state?: string;
+  };
+
+  const [locationInfo, setLocationInfo] = useState<LocationType[]>([]);
+
+  const getCordinate = async (cityName: string) => {
     try {
-      let res = await axiosInstance.get(`/geo/1.0/direct?q=${cityName}&limit=1&appid=${API_KEY}`);
-      if(res.data){
-        let {lat, lon} = res.data[0];
-        getWeatherData(lat, lon)
+      let res = await axiosInstance.get(
+        `/geo/1.0/direct?q=${cityName}&limit=1&appid=${API_KEY}`
+      );
+      if (res.data) {
+        setLocationInfo(res.data);
+        let { lat, lon } = res.data[0];
+        getWeatherData(lat, lon);
       }
     } catch (error) {
       throw error;
     }
-  }
+  };
 
-
-  const getWeatherData = async(lat:number, lon:number) => {
+  const getWeatherData = async (lat: number, lon: number) => {
     try {
-      let res = await axiosInstance.get(`/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
-      if(res.data){
-        setData(res);
+      let res = await axiosInstance.get(
+        `/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+      );
+      if (res.data) {
+        setData(res.data as WeatherDataType); //manual assertion
       }
     } catch (error) {
       throw error;
     }
-  }
+  };
 
   useEffect(() => {
     getCordinate(cityName);
-  }, [])
-  
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.search}>
-        <SearchScreen getCordinate={getCordinate}/>
+        <SearchScreen getCordinate={getCordinate} />
       </View>
-      <Text style={styles.cityName}>Bhubaneswar, India</Text>
-      <WeatherCard />
+      <Text style={styles.cityName}>
+        {locationInfo[0]?.name}, {locationInfo[0]?.state}
+      </Text>
+      {data && <WeatherCard data={data} />}
       <View style={styles.buttonContainer}>
         <Pressable style={styles.myBtn}>
-          <Text style={{ color: "#cfcfcfff", fontWeight:'bold' }}>View Details</Text>
+          <Text style={{ color: "#cfcfcfff", fontWeight: "bold" }}>
+            View Details
+          </Text>
         </Pressable>
-        <Pressable  style={styles.myBtn}>
-          <Text style={{ color: "#cfcfcfff", fontWeight:'bold' }}>Mark Favourite</Text>
+        <Pressable style={styles.myBtn}>
+          <Text style={{ color: "#cfcfcfff", fontWeight: "bold" }}>
+            Mark Favourite
+          </Text>
         </Pressable>
       </View>
       <HomeScreenForecast />
