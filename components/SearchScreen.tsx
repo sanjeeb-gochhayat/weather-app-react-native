@@ -23,10 +23,15 @@ const SearchScreen = ({ getCordinate }: Props) => {
 
   return (
     <View style={styles.container}>
-      <TextInput onChangeText={(text) => setQuery(text)} style={styles.input} />
+      <View style={styles.outerBorder}>
+  <View style={styles.innerBorder}>
+          <TextInput onChangeText={(text) => setQuery(text)} style={styles.input} placeholder="Enter city name"/>
+  </View>
+</View>
+
       <View style={styles.iconContainer}>
         <Pressable onPress={handleIconPress}>
-          <Ionicons name="search-outline" color={"gray"} size={30} />
+          <Ionicons name="search-outline" color={"#ffd33d"} size={30} />
         </Pressable>
       </View>
     </View>
@@ -46,15 +51,24 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     width: 280,
-    borderColor: "gray",
-    borderWidth: 1,
+  },
+    outerBorder: {
+    borderWidth: 4,
+    borderColor: "#455c9bff",
+    borderRadius: 10,
+  },
+  innerBorder: {
+    borderWidth: 2,
+    borderColor: "#ffd33d",
     borderRadius: 5,
   },
   iconContainer: {
     width: 50,
     height: 55,
-    borderColor: "#455c9bff",
-    borderWidth: 5,
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    backgroundColor: "#455c9bff",
     borderRadius: 10,
     padding: 5,
   },

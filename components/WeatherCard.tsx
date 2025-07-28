@@ -55,6 +55,21 @@ const WeatherCard = ({ data }: Props) => {
     year: "numeric",
   });
 
+    let extraDetails = [
+    {
+      value: `${data.clouds.all}%`,
+      label: "Cloudiness",
+    },
+    {
+      value: `${data.main.humidity}%`,
+      label: "Humidity",
+    },
+    {
+      value: `${data.wind.speed}m/s`,
+      label: "Wind speed",
+    },
+  ];
+
   return (
     <LinearGradient
       colors={["#455c9bff", "#5b5980ff"]}
@@ -67,30 +82,16 @@ const WeatherCard = ({ data }: Props) => {
       <Text style={styles.date}>{formattedDate}</Text>
       <Text style={styles.temp}>{Math.round(data.main.temp)}°</Text>
       <View style={styles.extraInfo}>
-        <View style={styles.extraItem}>
-          <Text
-            style={{ fontSize: 20, fontWeight: "bold", color: "#cfcfcfff" }}
-          >
-            {data.clouds.all}%
-          </Text>
-          <Text style={{ color: "#b4b4b4ff" }}>Cloudiness</Text>
-        </View>
-        <View style={styles.extraItem}>
-          <Text
-            style={{ fontSize: 20, fontWeight: "bold", color: "#cfcfcfff" }}
-          >
-            {data.main.humidity}%
-          </Text>
-          <Text style={{ color: "#b4b4b4ff" }}>Humidity</Text>
-        </View>
-        <View style={styles.extraItem}>
-          <Text
-            style={{ fontSize: 20, fontWeight: "bold", color: "#cfcfcfff" }}
-          >
-            {data.wind.speed}m/s
-          </Text>
-          <Text style={{ color: "#b4b4b4ff" }}>Wind Speed</Text>
-        </View>
+        {extraDetails?.map((item) => {
+          return (
+            <View key={item.value} style={styles.extraItem}>
+              <Text style={{ fontSize: 20, fontWeight: "bold", color:'#cfcfcfff' }}>
+                {item.value}
+              </Text>
+              <Text style={{ color:'#b4b4b4ff' }}>{item.label}</Text>
+            </View>
+          );
+        })}
       </View>
     </LinearGradient>
   );
