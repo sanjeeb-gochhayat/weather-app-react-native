@@ -3,6 +3,7 @@ import SearchScreen from "@/components/SearchScreen";
 import WeatherCard from "@/components/WeatherCard";
 import { API_KEY } from "@/constants";
 import axiosInstance from "@/utils/axios";
+import * as Location from "expo-location";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -43,32 +44,57 @@ type WeatherDataType = {
   cod: number;
 };
 
-  type LocationType = {
-    name: string;
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    local_names: {};
-    lat: number;
-    lon: number;
-    country: string;
-    state?: string;
-  };
+type LocationType = {
+  name: string;
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  local_names: {};
+  lat: number;
+  lon: number;
+  country: string;
+  state?: string;
+};
 
-  type PartialWeatherData = {
+type PartialWeatherData = {
   dt: number;
   main: {
     temp: number;
   };
 };
 
-
 const Index = () => {
-  const [cityName, setCityName] = useState<string>("Bhubaneswar");
+  const [cityName, setCityName] = useState<string>("");
 
   const [data, setData] = useState<WeatherDataType | null>(null);
 
   const [forecast, setForecast] = useState<PartialWeatherData[] | null>(null);
 
   const [locationInfo, setLocationInfo] = useState<LocationType[]>([]);
+
+    const getCurrentCity = async () => {
+    // Ask for permission
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Permission to access location was denied");
+      return;
+    }
+
+    // Get current position
+    let location = await Location.getCurrentPositionAsync({});
+    const { latitude, longitude } = location.coords;
+
+    // Reverse geocode to get city
+    let geocode = await Location.reverseGeocodeAsync({
+      latitude,
+      longitude,
+    });
+
+    if (geocode.length > 0) {
+      let city = geocode[0].formattedAddress?.split(",")[0];
+      console.log(city)
+      setCityName(city || "Unknown");
+      getCordinate(cityName);
+    }
+  };
 
   const getCordinate = async (cityName: string) => {
     try {
@@ -79,7 +105,7 @@ const Index = () => {
         setLocationInfo(res.data);
         let { lat, lon } = res.data[0];
         getWeatherData(lat, lon);
-        getForecast(lat,lon)
+        getForecast(lat, lon);
       }
     } catch (error) {
       throw error;
@@ -99,10 +125,10 @@ const Index = () => {
     }
   };
 
-  const getForecast = async(lat: number, lon: number) => {
-        try {
+  const getForecast = async (lat: number, lon: number) => {
+    try {
       let res = await axiosInstance.get(
-        `/data/2.5/forecast?lat=20.2602964&lon=85.8394521&units=metric&appid=${API_KEY}`
+        `/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
       );
       if (res.data) {
         setForecast(res.data.list.slice(0, 4) as PartialWeatherData[]); //manual assertion
@@ -110,10 +136,10 @@ const Index = () => {
     } catch (error) {
       throw error;
     }
-  }
+  };
 
   useEffect(() => {
-    getCordinate(cityName);
+    getCurrentCity();
   }, []);
 
   return (
@@ -121,8 +147,11 @@ const Index = () => {
       <View style={styles.search}>
         <SearchScreen getCordinate={getCordinate} />
       </View>
+
       <Text style={styles.cityName}>
-        {locationInfo[0]?.name}, {locationInfo[0]?.state}
+        {cityName === "Unknown"
+          ? "Enter a correct city name"
+          : `${locationInfo[0]?.name}, ${locationInfo[0]?.state}`}
       </Text>
       {data && <WeatherCard data={data} />}
       <View style={styles.buttonContainer}>
@@ -137,7 +166,7 @@ const Index = () => {
           </Text>
         </Pressable>
       </View>
-      {forecast && <HomeScreenForecast forecast={forecast}/>}
+      {forecast && <HomeScreenForecast forecast={forecast} />}
     </SafeAreaView>
   );
 };
