@@ -131,12 +131,12 @@ const Index = () => {
 
     if (geocode.length > 0) {
       let city = geocode[0].formattedAddress?.split(",")[0];
-      console.log(city);
       getCordinate(city);
     }
   };
 
   useEffect(() => {
+    getCordinate("Calcutta");
     getCurrentCity();
   }, []);
 
@@ -147,7 +147,9 @@ const Index = () => {
       </View>
 
       <Text style={styles.cityName}>
-        {locationInfo[0]?.name}, {locationInfo[0]?.state}
+        {!locationInfo[0]?.name
+         ?  "Welcome" 
+        :`${locationInfo[0]?.name}, ${locationInfo[0]?.state}`}
       </Text>
       {data && <WeatherCard data={data} />}
       <View style={styles.buttonContainer}>
