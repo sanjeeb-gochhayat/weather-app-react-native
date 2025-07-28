@@ -9,10 +9,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const Index = () => {
 
-  const cityName: string = "Bhubaneswar";
+  const [cityName, setCityName] = useState<string>("Bhubaneswar");
 
-  const [data, setData] = useState({});
-
+  const [data, setData] = useState<object>({});
+  
   const getCordinate = async(cityName: string) => {
     try {
       let res = await axiosInstance.get(`/geo/1.0/direct?q=${cityName}&limit=1&appid=${API_KEY}`);
@@ -45,7 +45,7 @@ const Index = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.search}>
-        <SearchScreen />
+        <SearchScreen getCordinate={getCordinate}/>
       </View>
       <Text style={styles.cityName}>Bhubaneswar, India</Text>
       <WeatherCard />
