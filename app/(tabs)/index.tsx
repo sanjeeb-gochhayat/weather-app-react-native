@@ -146,7 +146,7 @@ const Index = () => {
       </View>
 
       <Text style={styles.cityName}>
-        `${locationInfo[0]?.name}, ${locationInfo[0]?.state}
+        {locationInfo[0]?.name}, {locationInfo[0]?.state}
       </Text>
       {data && <WeatherCard data={data} />}
       <View style={styles.buttonContainer}>
