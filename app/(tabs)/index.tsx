@@ -62,38 +62,14 @@ type PartialWeatherData = {
 };
 
 const Index = () => {
-
   const [data, setData] = useState<WeatherDataType | null>(null);
 
   const [forecast, setForecast] = useState<PartialWeatherData[] | null>(null);
 
   const [locationInfo, setLocationInfo] = useState<LocationType[]>([]);
 
-    const getCurrentCity = async () => {
-    // Ask for permission
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Permission to access location was denied");
-      return;
-    }
-
-    // Get current position
-    let location = await Location.getCurrentPositionAsync({});
-    const { latitude, longitude } = location.coords;
-
-    // Reverse geocode to get city
-    let geocode = await Location.reverseGeocodeAsync({
-      latitude,
-      longitude,
-    });
-
-    if (geocode.length > 0) {
-      let city = geocode[0].formattedAddress?.split(",")[0];
-      getCordinate(city);
-    }
-  };
-
   const getCordinate = async (city: string | undefined) => {
+    console.log("hello");
     try {
       let res = await axiosInstance.get(
         `/geo/1.0/direct?q=${city}&limit=1&appid=${API_KEY}`
@@ -132,6 +108,31 @@ const Index = () => {
       }
     } catch (error) {
       throw error;
+    }
+  };
+
+  const getCurrentCity = async () => {
+    // Ask for permission
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Permission to access location was denied");
+      return;
+    }
+
+    // Get current position
+    let location = await Location.getCurrentPositionAsync({});
+    const { latitude, longitude } = location.coords;
+
+    // Reverse geocode to get city
+    let geocode = await Location.reverseGeocodeAsync({
+      latitude,
+      longitude,
+    });
+
+    if (geocode.length > 0) {
+      let city = geocode[0].formattedAddress?.split(",")[0];
+      console.log(city);
+      getCordinate(city);
     }
   };
 
