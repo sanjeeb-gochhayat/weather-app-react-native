@@ -43,12 +43,6 @@ type WeatherDataType = {
   cod: number;
 };
 
-
-const Index = () => {
-  const [cityName, setCityName] = useState<string>("Bhubaneswar");
-
-  const [data, setData] = useState<WeatherDataType | null>(null);
-
   type LocationType = {
     name: string;
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -58,6 +52,21 @@ const Index = () => {
     country: string;
     state?: string;
   };
+
+  type PartialWeatherData = {
+  dt: number;
+  main: {
+    temp: number;
+  };
+};
+
+
+const Index = () => {
+  const [cityName, setCityName] = useState<string>("Bhubaneswar");
+
+  const [data, setData] = useState<WeatherDataType | null>(null);
+
+  const [forecast, setForecast] = useState<PartialWeatherData[] | null>(null);
 
   const [locationInfo, setLocationInfo] = useState<LocationType[]>([]);
 
@@ -70,6 +79,7 @@ const Index = () => {
         setLocationInfo(res.data);
         let { lat, lon } = res.data[0];
         getWeatherData(lat, lon);
+        getForecast(lat,lon)
       }
     } catch (error) {
       throw error;
@@ -88,6 +98,19 @@ const Index = () => {
       throw error;
     }
   };
+
+  const getForecast = async(lat: number, lon: number) => {
+        try {
+      let res = await axiosInstance.get(
+        `/data/2.5/forecast?lat=20.2602964&lon=85.8394521&units=metric&appid=${API_KEY}`
+      );
+      if (res.data) {
+        setForecast(res.data.list.slice(0, 4) as PartialWeatherData[]); //manual assertion
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
 
   useEffect(() => {
     getCordinate(cityName);
@@ -114,7 +137,7 @@ const Index = () => {
           </Text>
         </Pressable>
       </View>
-      <HomeScreenForecast />
+      {forecast && <HomeScreenForecast forecast={forecast}/>}
     </SafeAreaView>
   );
 };
