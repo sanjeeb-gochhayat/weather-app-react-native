@@ -4,6 +4,7 @@ import WeatherCard from "@/components/WeatherCard";
 import { API_KEY, DEFAULT_CITY } from "@/constants";
 import axiosInstance from "@/utils/axios";
 import * as Location from "expo-location";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -66,6 +67,8 @@ const Index = () => {
   const [forecast, setForecast] = useState<PartialWeatherData[] | null>(null);
 
   const [locationInfo, setLocationInfo] = useState<LocationType[]>([]);
+
+  const router = useRouter();
 
   const getCordinate = async (city: string | undefined) => {
     console.log("hello");
@@ -135,7 +138,7 @@ const Index = () => {
   };
 
   useEffect(() => {
-    getCordinate(DEFAULT_CITY); 
+    getCordinate(DEFAULT_CITY);
     getCurrentCity();
   }, []);
 
@@ -147,12 +150,12 @@ const Index = () => {
 
       <Text style={styles.cityName}>
         {!locationInfo[0]?.name
-         ?  "Welcome" 
-        :`${locationInfo[0]?.name}, ${locationInfo[0]?.state}`}
+          ? "Welcome"
+          : `${locationInfo[0]?.name}, ${locationInfo[0]?.state}`}
       </Text>
       {data && <WeatherCard data={data} />}
       <View style={styles.buttonContainer}>
-        <Pressable style={styles.myBtn}>
+        <Pressable style={styles.myBtn} onPress={()=> router.push(`/detailsPage?city=${locationInfo[0]?.name}`)}>
           <Text style={{ color: "#cfcfcfff", fontWeight: "bold" }}>
             View Details
           </Text>
