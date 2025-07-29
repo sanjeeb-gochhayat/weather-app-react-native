@@ -19,10 +19,24 @@ export default function RootLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          title: "Home",
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               name={focused ? "home-sharp" : "home-outline"}
+              color={color}
+              size={24}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="favourites"
+        options={{
+          title: "Favourites",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "star-sharp" : "star-outline"}
               color={color}
               size={24}
             />
@@ -38,19 +52,6 @@ export default function RootLayout() {
               name={
                 focused ? "information-circle" : "information-circle-outline"
               }
-              color={color}
-              size={24}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="favourites"
-        options={{
-          title: "Favourites",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "star-sharp" : "star-outline"}
               color={color}
               size={24}
             />

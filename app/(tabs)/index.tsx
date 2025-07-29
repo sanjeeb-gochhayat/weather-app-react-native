@@ -1,7 +1,7 @@
 import HomeScreenForecast from "@/components/HomeScreenForecast";
 import SearchScreen from "@/components/SearchScreen";
 import WeatherCard from "@/components/WeatherCard";
-import { API_KEY } from "@/constants";
+import { API_KEY, DEFAULT_CITY } from "@/constants";
 import axiosInstance from "@/utils/axios";
 import * as Location from "expo-location";
 import React, { useEffect, useState } from "react";
@@ -46,8 +46,7 @@ type WeatherDataType = {
 
 type LocationType = {
   name: string;
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  local_names: {};
+  local_names: object;
   lat: number;
   lon: number;
   country: string;
@@ -136,7 +135,7 @@ const Index = () => {
   };
 
   useEffect(() => {
-    getCordinate("Calcutta");
+    getCordinate(DEFAULT_CITY); 
     getCurrentCity();
   }, []);
 
