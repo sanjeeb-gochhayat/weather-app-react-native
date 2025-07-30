@@ -1,39 +1,50 @@
-import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
+import { useRouter } from "expo-router";
+import React, { useCallback, useState } from "react";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 
-const cities = [
-  { id: "1", name: "Bhubaneswar" },
-  { id: "2", name: "Cuttack" },
-  { id: "3", name: "Puri" },
-  { id: "4", name: "Sambalpur" },
-  { id: "5", name: "Rourkela" },
-  { id: "6", name: "Balasore" },
-  { id: "7", name: "Berhampur" },
-  { id: "8", name: "Koraput" },
-  { id: "9", name: "Kendrapara" },
-  { id: "10", name: "Angul" },
-];
+const Favourites = () => {
+  const [favCities, setFavCities] = useState<string[]>([]);
 
-const favourites = () => {
+  const router = useRouter();
+
+  let getAllFavourites = async () => {
+    const existing = await AsyncStorage.getItem("favourites");
+    const favourites = existing ? JSON.parse(existing) : [];
+    setFavCities(favourites);
+  };
+
+  let handleRouteToDetailsScreen = (cityName: string) => {
+    router.push(`/detailsPage?city=${cityName}`)
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      getAllFavourites();
+    }, [])
+  );
+
   return (
     <View style={styles.container}>
       <FlatList
-        data={cities}
-        keyExtractor={(item) => item.id}
+        data={favCities}
+        keyExtractor={(item) => item}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContainer}
         renderItem={({ item }) => (
-          <View style={styles.cityCard}>
-            <Text style={styles.cityText}>{item.name}</Text>
-          </View>
+          <Pressable onPress={()=>handleRouteToDetailsScreen(item)}>
+            <View style={styles.cityCard}>
+              <Text style={styles.cityText}>{item}</Text>
+            </View>
+          </Pressable>
         )}
       />
     </View>
-  )
-}
+  );
+};
 
-export default favourites
-
+export default Favourites;
 
 const styles = StyleSheet.create({
   container: {
