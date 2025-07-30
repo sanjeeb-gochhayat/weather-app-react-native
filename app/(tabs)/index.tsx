@@ -3,6 +3,7 @@ import SearchScreen from "@/components/SearchScreen";
 import WeatherCard from "@/components/WeatherCard";
 import { API_KEY, DEFAULT_CITY } from "@/constants";
 import axiosInstance from "@/utils/axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -67,6 +68,10 @@ const Index = () => {
   const [forecast, setForecast] = useState<PartialWeatherData[] | null>(null);
 
   const [locationInfo, setLocationInfo] = useState<LocationType[]>([]);
+
+  const [favourites, setFavourites] = useState<string[]>([]);
+
+  const [counterState, setCounterState] = useState<number>(0); //only used for marking the city as favourite in UI
 
   const router = useRouter();
 
@@ -137,6 +142,38 @@ const Index = () => {
     }
   };
 
+  const markAsFavourite = async (cityName: string) => {
+    try {
+      const existing = await AsyncStorage.getItem("favourites");
+      const favourites = existing ? JSON.parse(existing) : [];
+
+      if (!favourites.includes(cityName)) {
+        favourites.push(cityName);
+        await AsyncStorage.setItem("favourites", JSON.stringify(favourites));
+        alert(`${cityName} added to favourites`);
+        setCounterState((ps) => ps + 1);
+      } else {
+        alert(`${cityName} is already in favourites`);
+      }
+    } catch (error) {
+      console.error("Error saving to AsyncStorage", error);
+    }
+  };
+
+  useEffect(() => {
+    const checkFavourite = async () => {
+      try {
+        const existing = await AsyncStorage.getItem("favourites");
+        const favourites = existing ? JSON.parse(existing) : [];
+        setFavourites(favourites);
+      } catch (error) {
+        console.error("Error reading favourites:", error);
+      }
+    };
+
+    checkFavourite();
+  }, [locationInfo, counterState]);
+
   useEffect(() => {
     getCordinate(DEFAULT_CITY);
     getCurrentCity();
@@ -151,16 +188,28 @@ const Index = () => {
       <Text style={styles.cityName}>
         {!locationInfo[0]?.name
           ? "Welcome"
-          : `${locationInfo[0]?.name}, ${locationInfo[0]?.state}`}
+          : `${locationInfo[0]?.name}, ${locationInfo[0]?.state}`}{favourites.includes(locationInfo[0]?.name) && "⭐"}
+        
       </Text>
       {data && <WeatherCard data={data} />}
       <View style={styles.buttonContainer}>
-        <Pressable style={styles.myBtn} onPress={()=> router.push(`/detailsPage?city=${locationInfo[0]?.name}`)}>
+        <Pressable
+          style={styles.myBtn}
+          onPress={() =>
+            router.push(`/detailsPage?city=${locationInfo[0]?.name}`)
+          }
+        >
           <Text style={{ color: "#cfcfcfff", fontWeight: "bold" }}>
             View Details
           </Text>
         </Pressable>
-        <Pressable style={styles.myBtn}>
+        <Pressable
+          style={styles.myBtn}
+          onPress={() => {
+            markAsFavourite(locationInfo[0]?.name);
+            
+          }}
+        >
           <Text style={{ color: "#cfcfcfff", fontWeight: "bold" }}>
             Mark Favourite
           </Text>

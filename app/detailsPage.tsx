@@ -79,8 +79,8 @@ const DetailsPage = () => {
     }
   };
 
-  const getTime = (unix: number) =>
-    new Date(unix * 1000).toLocaleTimeString();
+  const getTime = (time: number) =>
+    new Date(time * 1000).toLocaleTimeString();
 
   useEffect(() => {
     if (typeof city === "string") {
