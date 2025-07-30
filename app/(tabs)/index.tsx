@@ -247,13 +247,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textDecorationLine: "underline",
     color: "#fff",
+
   },
   footerContainer: {
     flex: 1 / 3,
     alignItems: "center",
   },
   myBtn: {
-    width: 100,
+    width: 140,
     height: 35,
     backgroundColor: "#455c9bff",
     display: "flex",

@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   },
   extraItem: {
     height: 80,
-    width: 80,
+    width: "33%",
     borderColor: "gray",
     borderWidth: 1,
     display: "flex",
